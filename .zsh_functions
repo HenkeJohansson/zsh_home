@@ -1,0 +1,273 @@
+
+
+function toClipboard {
+  pbcopy "$1"
+}
+
+# linc current path
+function linkToScripts {
+  PATH_TO_LINK=$PWD
+  (cd ~/scripts/ && ln -s "$PATH_TO_LINK/$1")
+}
+
+# Build a production version of BYOX
+function deployBYOX {
+  if [[ -z "$1" ]]; then
+    echo "use: deploy_byox env [m2 || irw || mobile] byox [byod || byodc || byooc]"
+  else
+    (cd ~/Cyber/nextgen-ikea-byox && grunt deploy --env="$1" --byox="$2" --server=netstorage --target=production)
+  fi
+}
+
+# Do a clean install of BYOX
+function cleanInstallBYOX {
+  echo "CLEAN INSTALL BYOX"
+  (cd ~/Cyber/nextgen-ikea-byox && rm -rf node_modules yarn.lock && yarn install)
+  echo "DONE"
+}
+
+# Do a clean install of VIDGA
+function cleanInstallVIDGA {
+  echo "CLEAN INSTALL ALL VIDGA PROJECTS"
+  (cd ~/Cyber/ikea-vidga/vidga-calculator && rm -rf node_modules package-lock.json && npm install)
+  (cd ~/Cyber/ikea-vidga/vidga-calculator-api-express && rm -rf node_modules package-lock.json && npm install)
+  (cd ~/Cyber/ikea-vidga/vidga-webapp && rm -rf node_modules package-lock.json && npm install)
+  echo "DONE"
+}
+
+
+# Get IKEA storeIDs based on locale
+function getIkeaStoreId {
+  grep "$1" "/Users/hejoh3/scripts/getIkeaStoreIDs_storeIDs.txt" | cut -d " " -f3-
+}
+
+# Update config file for jonaxel/bror
+# unsure if bror files are the right ones
+function s2UpdateConfig {
+  REPO_PATH="$HOME/Cyber/ikea-bror"
+  BACKUP_PATH="$HOME/OneDrive - Cybercom Group AB/Ikea/Lagra2/backups/configs"
+  PROJECT="$1"
+  FILE="$2"
+
+  # if [[ -z "$PROJECT" && "$PROJECT" == "help" ]]; then
+  #   echo "s2UpdateConfig <planner> <file>"
+  #   exit 1
+  # fi
+
+  if [[ -z "$PROJECT" || -z "$FILE" ]]; then
+    echo "Missing arguments"
+    return 1
+  fi
+
+  # create folder for project backups
+  mkdir -p "${BACKUP_PATH}/${PROJECT}"
+
+  if [[ "$PROJECT" == "boaxel" ]]; then
+    (
+      cd "${REPO_PATH}/datagenerator/byggis/" &&
+      cp "${REPO_PATH}/datagenerator/byggis/in/${FILE}_Boaxel.json" "${BACKUP_PATH}/boaxel/${FILE}_Boaxel.json" &&
+      node bulka_boaxel &&
+      cp "${REPO_PATH}/datagenerator/byggis/out/${FILE}.json" "${REPO_PATH}/public/configs/boaxel/${FILE}.json"
+    )
+  elif [[ "$PROJECT" == "jonaxel" ]]; then
+    (
+      cd "${REPO_PATH}/datagenerator/byggis/" &&
+      cp "${REPO_PATH}/datagenerator/byggis/in/${FILE}_Jonaxel.json" "${BACKUP_PATH}/jonaxel/${FILE}_Jonaxel.json" &&
+      node bulka_jonaxel &&
+      cp "${REPO_PATH}/datagenerator/byggis/out/${FILE}.json" "${REPO_PATH}/public/configs/jonaxel/${FILE}.json"
+    )
+  elif [[ "$PROJECT" == "bror" ]]; then
+    (
+      cd "${REPO_PATH}/datagenerator/byggis/" &&
+      cp "${REPO_PATH}/datagenerator/byggis/in/${FILE}_Bror.json" "${BACKUP_PATH}/bror/${FILE}_Bror.json" && 
+      node bulka_bror &&
+      cp "${REPO_PATH}/datagenerator/byggis/out/${FILE}.json" "${REPO_PATH}/public/configs/bror/${FILE}.json"
+    )
+    (cp "$REPO_PATH"/datagenerator/byggis/in/"$FILE"_Bror.json "$BACKUP_PATH"/bror/"$FILE"_Bror.json)
+    (cd "$REPO_PATH"/datagenerator/byggis && node bulka_bror && cp "$REPO_PATH"/datagenerator/byggis/out/"$FILE".json "$REPO_PATH"/public/configs/bror/"$FILE".json)
+  fi
+}
+# move ALL the files
+function s2UpdateConfigs {
+  REPO_PATH="$HOME/Cyber/ikea-bror"
+  BACKUP_PATH="$HOME/OneDrive - Cybercom Group AB/Ikea/Lagra2/backups/configs"
+  PROJECT="$1"
+
+  if [[ -z "$PROJECT" ]]; then
+    echo "Missing arguments"
+    return 1
+  fi
+
+  # create folder for project backups
+  mkdir -p "${BACKUP_PATH}/${PROJECT}"
+
+  echo "ok here"
+  if [[ "$PROJECT" == "boaxel" ]]; then
+    (
+      cd "${REPO_PATH}/datagenerator/byggis/in" &&
+      cp "groups_Boaxel.json" "models_Boaxel.json" "products_Boaxel.json" "${BACKUP_PATH}/boaxel/" &&
+      cd ".." &&
+      echo "*********************************************"
+      node bulka_boaxel &&
+      echo "*********************************************"
+      cd "${REPO_PATH}/datagenerator/byggis/out/" &&
+      cp "groups.json" "models.json" "products.json" "${REPO_PATH}/public/configs/boaxel/"
+    )
+  elif [[ "$PROJECT" == "jonaxel" ]]; then
+    (
+      cd "${REPO_PATH}/datagenerator/byggis/in" &&
+      cp "groups_Jonaxel.json" "models_Jonaxel.json" "products_Jonaxel.json" "${BACKUP_PATH}/jonaxel/" &&
+      cd ".." &&
+      echo "*********************************************"
+      node bulka_jonaxel &&
+      echo "*********************************************"
+      cd "${REPO_PATH}/datagenerator/byggis/out/" &&
+      cp "groups.json" "models.json" "products.json" "${REPO_PATH}/public/configs/jonaxel/"
+    )
+  elif [[ "$PROJECT" == "bror" ]]; then
+    (
+      cd "${REPO_PATH}/datagenerator/byggis/in" &&
+      cp "groups_Bror.json" "models_Bror.json" "products_Bror.json" "${BACKUP_PATH}/bror/" &&
+      cd ".." &&
+      echo "*********************************************"
+      node bulka_bror &&
+      echo "*********************************************"
+      cd "${REPO_PATH}/datagenerator/byggis/out/" &&
+      cp "groups.json" "models.json" "products.json" "${REPO_PATH}/public/configs/bror/"
+    )
+  fi
+}
+
+function s2RollBackConfig {
+  REPO_PATH="$HOME/Cyber/ikea-bror"
+  BACKUP_PATH="$HOME/OneDrive - Cybercom Group AB/Ikea/Lagra2/backups/configs"
+  PROJECT="$1"
+  FILE="$2"
+
+  if [[ -z "$PROJECT" || -z "$FILE" ]]; then
+    echo "Missing arguments"
+    return 1
+  fi
+
+  if [[ "$PROJECT" == "boaxel" ]]; then
+    (
+      cd "${REPO_PATH}/datagenerator/byggis/" &&
+      cp "${BACKUP_PATH}/boaxel/${FILE}_Boaxel.json" "${REPO_PATH}/datagenerator/byggis/in/${FILE}_Boaxel.json" &&
+      node bulka_boaxel &&
+      cp "${REPO_PATH}/datagenerator/byggis/out/${FILE}.json" "${REPO_PATH}/public/configs/boaxel/${FILE}.json"
+    )
+  elif [[ "$PROJECT" == "jonaxel" ]]; then
+    (
+      cd "${REPO_PATH}/datagenerator/byggis/" &&
+      cp "${BACKUP_PATH}/jonaxel/${FILE}_Jonaxel.json" "${REPO_PATH}/datagenerator/byggis/in/${FILE}_Jonaxel.json" &&
+      node bulka_jonaxel &&
+      cp "${REPO_PATH}/datagenerator/byggis/out/${FILE}.json" "${REPO_PATH}/public/configs/jonaxel/${FILE}.json"
+    )
+  elif [[ "$PROJECT" == "bror" ]]; then
+    (
+      cd "${REPO_PATH}/datagenerator/byggis/" &&
+      cp "${BACKUP_PATH}/bror/${FILE}_Bror.json" "${REPO_PATH}/datagenerator/byggis/in/${FILE}_Bror.json" && 
+      node bulka_bror &&
+      cp "${REPO_PATH}/datagenerator/byggis/out/${FILE}.json" "${REPO_PATH}/public/configs/bror/${FILE}.json"
+    )
+  fi
+}
+
+function s2RollBackConfigs {
+  REPO_PATH="$HOME/Cyber/ikea-bror"
+  BACKUP_PATH="$HOME/OneDrive - Cybercom Group AB/Ikea/Lagra2/backups/configs"
+  PROJECT="$1"
+
+  if [[ -z "$PROJECT" ]]; then
+    echo "Missing arguments"
+    return 1
+  fi
+
+  if [[ "$PROJECT" == "boaxel" ]]; then
+    (
+      cd "${BACKUP_PATH}/boaxel" &&
+      cp "groups_Boaxel.json" "models_Boaxel.json" "products_Boaxel.json" "${REPO_PATH}/datagenerator/byggis/in/"
+      cd "${REPO_PATH}/datagenerator/byggis/" &&
+      node bulka_boaxel &&
+      cd "${REPO_PATH}/datagenerator/byggis/out/"
+      cp "groups.json" "models.json" "products.json" "${REPO_PATH}/public/configs/boaxel/"
+    )
+  elif [[ "$PROJECT" == "jonaxel" ]]; then
+    (
+      cd "${BACKUP_PATH}/jonaxel" &&
+      cp "groups_Jonaxel.json" "models_Jonaxel.json" "products_Jonaxel.json" "${REPO_PATH}/datagenerator/byggis/in/"
+      cd "${REPO_PATH}/datagenerator/byggis/" &&
+      node bulka_jonaxel &&
+      cd "${REPO_PATH}/datagenerator/byggis/out/"
+      cp "groups.json" "models.json" "products.json" "${REPO_PATH}/public/configs/jonaxel/"
+    )
+  elif [[ "$PROJECT" == "bror" ]]; then
+    (
+      cd "${BACKUP_PATH}/bror" &&
+      cp "groups_Bror.json" "models_Bror.json" "products_Bror.json" "${REPO_PATH}/datagenerator/byggis/in/"
+      cd "${REPO_PATH}/datagenerator/byggis/" &&
+      node bulka_bror &&
+      cd "${REPO_PATH}/datagenerator/byggis/out/"
+      cp "groups.json" "models.json" "products.json" "${REPO_PATH}/public/configs/bror/"
+    )
+  fi
+}
+
+# Find git branch by part of its name
+function gFindBranch {
+  git branch --all | grep "$1"
+}
+
+# Delete this branch
+function gDeleteThisBranch {
+  BRANCH_NAME=$(git branch | grep \* | cut -d ' ' -f2)
+  git checkout master
+  git branch -d "$BRANCH_NAME"
+}
+
+# Branch out
+function gBranchOut {
+  git pull
+  git checkout -b "$1"
+}
+
+# merge current branch with latest from master
+function gMergeMaster {
+  git checkout master && git pull && git checkout - && git merge master
+}
+
+# rebase current branch with latest from master
+function gRebaseMaster {
+  git checkout master && git pull && git checkout - && git rebase master
+}
+
+# rebase current branch with latest from $1
+function gRebaseBranch {
+  git checkout $1 && git pull && git checkout - && git rebase $1
+}
+
+# remove X from stash
+function gDropFromStash {
+  git stash drop stash@{$1}
+}
+
+# save to stash
+function gStash {
+  git stash save $1
+}
+
+# drop stash
+function gDropStash {
+  git stash drop stash@{$1}
+}
+
+# get from stash
+function gApply {
+  git stash apply stash@{$1}
+  git stash drop stash@{$1}
+}
+
+# Clear stash
+function gClearStash {
+  git stash drop
+}
