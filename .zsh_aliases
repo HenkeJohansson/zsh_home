@@ -17,8 +17,8 @@ alias ohmyzsh="sudo vim  $HOME/.oh-my-zsh"
 alias codezshconfig="code $HOME/.zshrc"
 
 alias la="ls -la"
-alias lock="light-locker -command -l"
-alias swapSuper="xmodmap $HOME/.Xmodmap"
+alias lock="light-locker-command -l"
+alias swapSuper="xmodmap ~/.Xmodmap"
 alias startClock="watch -n1 \"date '+%D%n%T'|figlet -k\""
 
 # GIT
