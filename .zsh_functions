@@ -1,1 +1,72 @@
 
+
+function toClipboard {
+  pbcopy "$1"
+}
+
+# linc current path
+function linkToScripts {
+  PATH_TO_LINK=$PWD
+  (cd ~/scripts/ && ln -s "$PATH_TO_LINK/$1")
+}
+
+
+### GIT ###
+# Find git branch by part of its name
+function gFindBranch {
+  git branch --all | grep "$1"
+}
+
+# Delete this branch
+function gDeleteThisBranch {
+  BRANCH_NAME=$(git branch | grep \* | cut -d ' ' -f2)
+  git checkout master
+  git branch -d "$BRANCH_NAME"
+}
+
+# Branch out
+function gBranchOut {
+  git pull
+  git checkout -b "$1"
+}
+
+# merge current branch with latest from master
+function gMergeMaster {
+  git checkout master && git pull && git checkout - && git merge master
+}
+
+# rebase current branch with latest from master
+function gRebaseMaster {
+  git checkout master && git pull && git checkout - && git rebase master
+}
+
+# rebase current branch with latest from $1
+function gRebaseBranch {
+  git checkout $1 && git pull && git checkout - && git rebase $1
+}
+
+# remove X from stash
+function gDropFromStash {
+  git stash drop stash@{$1}
+}
+
+# save to stash
+function gStash {
+  git stash save $1
+}
+
+# drop stash
+function gDropStash {
+  git stash drop stash@{$1}
+}
+
+# get from stash
+function gApply {
+  git stash apply stash@{$1}
+  git stash drop stash@{$1}
+}
+
+# Clear stash
+function gClearStash {
+  git stash drop
+}

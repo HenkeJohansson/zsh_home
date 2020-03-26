@@ -1,11 +1,35 @@
 # List all custom aliases
 alias showAliases="grep 'alias ' '$HOME/.zsh_aliases' | cut -d ' ' -f2-"
 
-alias zshconfig="sudo vim ~/.zshrc"
-alias ohmyzsh="sudo vim  ~/.oh-my-zsh"
+# Reload shell
+alias reloadzsh="source $HOME/.zshrc"
+# List all scripts
+alias showScripts="ls $HOME/scripts"
+# list functions
+alias listFunctions="grep 'function.*{' $HOME/.zsh_functions | awk '{print \$2}'"
+# Gets IP adress
+alias watmyip="ip addr en0 | grep '\<inet\>' | awk '{print \$2}'"
+# List open PORTs
+alias of="lsof -nP +c 15 | grep LISTEN"
+
+alias zshconfig="sudo vim $HOME/.zshrc"
+alias ohmyzsh="sudo vim  $HOME/.oh-my-zsh"
 alias codezshconfig="code $HOME/.zshrc"
-alias codezsh_aliases="code $HOME/.zsh_aliases"
+
 alias la="ls -la"
 alias lock="light-locker -command -l"
-alias swapSuper="xmodmap ~/.Xmodmap"
+alias swapSuper="xmodmap $HOME/.Xmodmap"
 alias startClock="watch -n1 \"date '+%D%n%T'|figlet -k\""
+
+# GIT
+alias gmm="gMergeMaster"
+alias gColorMerge="!f() { git merge $@ | egrep --color 'CONFLICT .*|$' ; }; f"
+
+
+# TODO
+# listall TODOs
+alias tl="todo listall"
+# add TODO
+alias ta="todo add"
+# remove TODO
+alias td="todo del"
