@@ -10,6 +10,13 @@ function linkToScripts {
   (cd ~/scripts/ && ln -s "$PATH_TO_LINK/$1")
 }
 
+# Fix corrupt history
+function fixHistory {
+  mv ~/.zsh_history .zsh_history_bad
+  strings .zsh_history_bad > .zsh_history
+  fc -R .zsh_history
+}
+
 
 ### GIT ###
 # Find git branch by part of its name

@@ -21,6 +21,11 @@ alias lock="light-locker-command -l"
 alias swapSuper="xmodmap ~/.Xmodmap"
 alias startClock="watch -n1 \"date '+%D%n%T'|figlet -k\""
 
+# Open folders in code
+alias codeZshHome="code ~/Projects/zsh_home"
+alias codeZshWork="code ~/Projects/zsh_work"
+alias codeRcLua="conde ~/.config/awesome/rc.lua"
+
 # GIT
 alias gmm="gMergeMaster"
 alias gColorMerge="!f() { git merge $@ | egrep --color 'CONFLICT .*|$' ; }; f"
