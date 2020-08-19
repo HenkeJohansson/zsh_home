@@ -1,6 +1,26 @@
 # List all custom aliases
 alias showAliases="grep 'alias ' '$HOME/.zsh_aliases' | cut -d ' ' -f2-"
 
+# Navigation
+alias ..="cd .."
+alias ...="cd ../.."
+alias .3="cd ../../.."
+alias .4="cd ../../../.."
+alias .5="cd ../../../../.."
+
+# list stuff
+alias la="ls -la"
+alias ll="ls -ll"
+alias es="exa -al --color=always --group-directories-first"
+alias ea="exa -a --color=always --groupdirectories-first"
+alias el="exa -l --color=always --groupdirectories-first"
+alias et="exa aT --color=always --group-directories-first"
+
+# pacman/yay
+alias yaysua="yay -Sua --noconfirm"               # update only AUR packages
+alias yaysyu="yay -Syu --nofonfirm"               # update standard and AUR packages
+alias pacclean='sudo pacman -Rns $(pacman -Qtdq)' # remove orphaned packages
+
 # Reload shell
 alias reloadzsh="source $HOME/.zshrc"
 # List all scripts
@@ -12,14 +32,23 @@ alias watmyip="ip addr en0 | grep '\<inet\>' | awk '{print \$2}'"
 # List open PORTs
 alias of="lsof -nP +c 15 | grep LISTEN"
 
+# ZSH
 alias zshconfig="sudo vim $HOME/.zshrc"
 alias ohmyzsh="sudo vim  $HOME/.oh-my-zsh"
 alias codezshconfig="code $HOME/.zshrc"
 
-alias la="ls -la"
+# misc
 alias lock="light-locker-command -l"
 alias swapSuper="xmodmap ~/.Xmodmap"
 alias startClock="watch -n1 \"date '+%D%n%T'|figlet -k\""
+
+# Adding flags
+alias cp="cp -i"
+alias df="df -h"
+
+# Shutdown and reboot
+alias ssn="sudo shutdown now"
+alias sr="sudo reboot"
 
 # Open folders in code
 alias codeZshHome="code ~/Projects/zsh_home"
@@ -30,6 +59,11 @@ alias codeRcLua="conde ~/.config/awesome/rc.lua"
 alias gmm="gMergeMaster"
 alias gColorMerge="!f() { git merge $@ | egrep --color 'CONFLICT .*|$' ; }; f"
 
+# NordVPN
+alias nc="nordvpn connect"
+alias nd="nordvpn disconnect"
+alias ns="nordvpn status"
+alias nlc="nordvpn countries"
 
 # TODO
 # listall TODOs
