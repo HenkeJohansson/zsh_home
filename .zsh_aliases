@@ -12,8 +12,8 @@ alias .5="cd ../../../../.."
 alias la="ls -la"
 alias ll="ls -ll"
 alias es="exa -al --color=always --group-directories-first"
-alias ea="exa -a --color=always --groupdirectories-first"
-alias el="exa -l --color=always --groupdirectories-first"
+alias ea="exa -a --color=always --group-directories-first"
+alias el="exa -l --color=always --group-directories-first"
 alias et="exa aT --color=always --group-directories-first"
 
 # pacman/yay
