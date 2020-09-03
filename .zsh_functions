@@ -47,11 +47,6 @@ function gRebaseMaster {
   git checkout master && git pull && git checkout - && git rebase master
 }
 
-# rebase current branch with latest from $1
-function gRebaseBranch {
-  git checkout $1 && git pull && git checkout - && git rebase $1
-}
-
 # remove X from stash
 function gDropFromStash {
   git stash drop stash@{$1}
