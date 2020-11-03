@@ -9,12 +9,12 @@ alias .4="cd ../../../.."
 alias .5="cd ../../../../.."
 
 # list stuff
-alias la="ls -la"
-alias ll="ls -ll"
-alias es="exa -al --color=always --group-directories-first"
-alias ea="exa -a --color=always --group-directories-first"
-alias el="exa -l --color=always --group-directories-first"
-alias et="exa aT --color=always --group-directories-first"
+#alias la="ls -la"
+#alias ll="ls -ll"
+alias ls="lsd"
+alias la="lsd -laF"
+alias ll="lsd -llF"
+alias lt="lsd --tree"
 
 # pacman/yay
 alias yaysua="yay -Sua --noconfirm"               # update only AUR packages
