@@ -73,3 +73,9 @@ alias tl="todo listall"
 alias ta="todo add"
 # remove TODO
 alias td="todo del"
+
+
+# Take a picture with the webcam
+# requires MPlayer
+# and us S to take photos (they are saved in the dir where you run the command from
+alias takephoto="mplayer tv:// -tv driver=v4l2:width=640:height=480:device=/dev/video0 -fps 15 -vf screenshot"
