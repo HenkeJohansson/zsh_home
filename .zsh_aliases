@@ -42,6 +42,7 @@ alias lock="light-locker-command -l"
 alias swapSuper="xmodmap ~/.Xmodmap"
 alias startClock="watch -n1 \"date '+%D%n%T'|figlet -k\""
 alias yeet="rm -rf"
+alias sleep="xset dpms force off"
 
 # Adding flags
 alias cp="cp -i"
